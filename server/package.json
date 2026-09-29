@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "dev": "tsx watch --env-file=.env src/index.ts"
+    "dev": "tsx watch --env-file=.env src/index.ts",
+    "seed": "tsx --env-file=.env src/seed.ts"
   },
   "keywords": [],
   "author": "",
