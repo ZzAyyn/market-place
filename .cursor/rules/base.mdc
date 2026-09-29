@@ -1,0 +1,13 @@
+---
+description: "Marketplace project stack and conventions"
+alwaysApply: true
+---
+
+Marketplace assessment app.
+Folders: /server (Express + TypeScript + Prisma + PostgreSQL), /client (React + Vite + TypeScript).
+
+- TypeScript strict. No `any`.
+- Money stored as integer cents. Format only at display.
+- Zod for all validation; share schemas between client and server.
+- Small composable components, one responsibility each.
+- Assessment brief is in docs/ — read it before proposing structure.

@@ -1,0 +1,12 @@
+---
+description: "Express and Prisma backend conventions"
+globs: ["server/**/*.ts"]
+alwaysApply: false
+---
+
+- Prisma client only, no raw SQL.
+- Validate request bodies with Zod at the route boundary.
+- Return { data, meta } for lists, { error: { message, fields? } } on failure.
+- 201 on create, 204 on delete, 400 validation, 404 missing.
+- One error middleware catches everything; no try/catch inside routes.
+- PATCH for updates, not PUT.

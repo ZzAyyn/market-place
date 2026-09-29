@@ -1,0 +1,21 @@
+# Env
+.env
+.env.local
+
+# Deps
+node_modules/
+
+# Build
+dist/
+build/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Local rules
+.cursor/rules/working-style.mdc
