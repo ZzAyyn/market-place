@@ -1,6 +1,7 @@
 import cors from "cors";
 import express from "express";
 import { errorHandler } from "./middleware/error.js";
+import { categoriesRouter } from "./routes/categories.js";
 import { productsRouter } from "./routes/products.js";
 
 export const app = express();
@@ -13,4 +14,5 @@ app.get("/health", (_req, res) => {
 });
 
 app.use("/api/products", productsRouter);
+app.use("/api/categories", categoriesRouter);
 app.use(errorHandler);
