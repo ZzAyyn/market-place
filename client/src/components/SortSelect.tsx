@@ -13,7 +13,7 @@ type SortSelectProps = {
 
 export function SortSelect({ sort, onSortChange }: SortSelectProps) {
   return (
-    <label className="flex items-center gap-2 text-sm text-muted">
+    <label className="flex w-full min-w-0 items-center gap-3 text-sm text-muted md:w-auto">
       Sort
       <select
         value={sort}
@@ -23,7 +23,7 @@ export function SortSelect({ sort, onSortChange }: SortSelectProps) {
             onSortChange(value);
           }
         }}
-        className="rounded border border-border bg-background px-3 py-2 text-sm text-foreground"
+        className="min-w-0 flex-1 rounded border border-border bg-background px-4 py-2.5 text-sm text-foreground md:flex-none"
       >
         {options.map((option) => (
           <option key={option.value} value={option.value}>

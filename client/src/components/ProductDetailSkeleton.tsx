@@ -3,7 +3,7 @@ export function ProductDetailSkeleton() {
     <div
       aria-busy="true"
       aria-label="Loading product"
-      className="grid grid-cols-1 gap-8 md:grid-cols-2"
+      className="grid grid-cols-1 gap-10 md:grid-cols-2 md:gap-16"
     >
       <div aria-hidden="true" className="aspect-square animate-pulse rounded bg-subtle" />
       <div aria-hidden="true">

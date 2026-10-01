@@ -2,6 +2,7 @@ import type { UseFormSetError } from "react-hook-form";
 import { z } from "zod";
 import { ApiError } from "./api/client.ts";
 import type { ProductWriteBody } from "./api/products.ts";
+import { friendlyErrorMessage } from "./friendlyError.ts";
 
 const rufiyaaPattern = /^(?:0|[1-9]\d*)(?:\.\d{1,2})?$/;
 const stockPattern = /^(?:0|[1-9]\d*)$/;
@@ -72,7 +73,7 @@ export function applyServerFieldErrors(
   setError: UseFormSetError<ProductFormValues>,
 ): string | undefined {
   if (!(error instanceof ApiError) || error.fields === undefined) {
-    return error instanceof ApiError ? error.message : "Could not save this product.";
+    return friendlyErrorMessage(error, "Could not save this product.");
   }
 
   let mapped = false;
@@ -89,7 +90,7 @@ export function applyServerFieldErrors(
   }
 
   if (!mapped || unmapped) {
-    return error.message;
+    return friendlyErrorMessage(error, "Could not save this product.");
   }
 
   return undefined;

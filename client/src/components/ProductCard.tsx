@@ -16,9 +16,9 @@ export function ProductCard({ product }: { product: Product }) {
             />
           ) : null}
         </div>
-        <h2 className="mt-3 truncate text-lg">{product.name}</h2>
-        <p className="mt-1 truncate text-sm text-muted">{product.category.name}</p>
-        <p className="mt-2 text-sm">{formatPrice(product.priceCents)}</p>
+        <h2 className="mt-4 truncate text-lg">{product.name}</h2>
+        <p className="mt-2 truncate text-sm text-muted">{product.category.name}</p>
+        <p className="mt-3 text-sm">{formatPrice(product.priceCents)}</p>
       </Link>
     </article>
   );

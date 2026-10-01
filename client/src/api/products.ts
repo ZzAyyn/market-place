@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { z } from "zod";
 import { ApiError, apiDelete, apiGet, apiSend } from "./client.ts";
+import { friendlyErrorMessage } from "../friendlyError.ts";
 
 const productSchema = z.object({
   id: z.string(),
@@ -168,8 +169,7 @@ export function useDeleteProduct() {
         }
       }
 
-      const message = error instanceof Error ? error.message : "Could not delete this product.";
-      toast.error(message);
+      toast.error(friendlyErrorMessage(error, "Could not delete this product."));
     },
     onSettled: () => {
       void queryClient.invalidateQueries({ queryKey: ["products"] });

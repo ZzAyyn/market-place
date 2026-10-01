@@ -1,9 +1,11 @@
-import { useEffect, useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useCategories } from "../api/categories.ts";
+import { LoadError } from "./LoadError.tsx";
+import { useFocusTrap } from "../hooks/useFocusTrap.ts";
 import {
   createProduct,
   updateProduct,
@@ -19,7 +21,7 @@ import {
 } from "../productForm.ts";
 
 const inputClassName =
-  "w-full rounded border border-border bg-background px-3 py-2 text-sm";
+  "w-full rounded border border-border bg-background px-4 py-3 text-sm";
 
 function formDefaults(product: ProductDetail | undefined): ProductFormValues {
   if (product === undefined) {
@@ -98,7 +100,7 @@ function ProductForm({
 
   return (
     <form className="flex min-h-0 flex-1 flex-col" noValidate onSubmit={handleSubmit(onSubmit)}>
-      <div className="flex flex-1 flex-col gap-5 overflow-y-auto px-6 py-6">
+      <div className="flex flex-1 flex-col gap-7 overflow-y-auto px-6 py-8 md:px-8">
         <div>
           <label
             htmlFor={nameId}
@@ -109,7 +111,7 @@ function ProductForm({
           <input
             id={nameId}
             autoFocus
-            className={`${inputClassName} mt-2`}
+            className={`${inputClassName} mt-3`}
             aria-invalid={errors.name !== undefined}
             {...register("name")}
           />
@@ -127,7 +129,7 @@ function ProductForm({
           <textarea
             id={descriptionId}
             rows={4}
-            className={`${inputClassName} mt-2`}
+            className={`${inputClassName} mt-3`}
             aria-invalid={errors.description !== undefined}
             {...register("description")}
           />
@@ -146,7 +148,7 @@ function ProductForm({
             id={priceId}
             inputMode="decimal"
             placeholder="12.50"
-            className={`${inputClassName} mt-2`}
+            className={`${inputClassName} mt-3`}
             aria-invalid={errors.price !== undefined}
             {...register("price")}
           />
@@ -164,7 +166,7 @@ function ProductForm({
           <input
             id={stockId}
             inputMode="numeric"
-            className={`${inputClassName} mt-2`}
+            className={`${inputClassName} mt-3`}
             aria-invalid={errors.stock !== undefined}
             {...register("stock")}
           />
@@ -183,7 +185,7 @@ function ProductForm({
             id={imageId}
             inputMode="url"
             placeholder="https://"
-            className={`${inputClassName} mt-2`}
+            className={`${inputClassName} mt-3`}
             aria-invalid={errors.imageUrl !== undefined}
             {...register("imageUrl")}
           />
@@ -200,7 +202,7 @@ function ProductForm({
           </label>
           <select
             id={categoryId}
-            className={`${inputClassName} mt-2`}
+            className={`${inputClassName} mt-3`}
             aria-invalid={errors.categoryId !== undefined}
             {...register("categoryId")}
           >
@@ -224,7 +226,7 @@ function ProductForm({
           </p>
         ) : null}
       </div>
-      <div className="flex justify-end gap-3 border-t border-border px-6 py-4">
+      <div className="flex flex-wrap justify-end gap-4 border-t border-border px-6 py-5 md:px-8">
         <button
           type="button"
           onClick={onClose}
@@ -252,6 +254,8 @@ export function ProductFormDrawer({
   onClose: () => void;
 }) {
   const titleId = useId();
+  const panelRef = useRef<HTMLElement>(null);
+  useFocusTrap(panelRef);
   const isEdit = productId !== undefined;
   const categories = useCategories();
   const productQuery = useProductById(productId);
@@ -275,23 +279,29 @@ export function ProductFormDrawer({
     };
   }, [onClose]);
 
-  let body = <p className="px-6 py-6 text-sm text-muted">Loading…</p>;
+  let body = <p className="px-6 py-8 text-sm text-muted md:px-8">Loading…</p>;
 
   if (isEdit && productQuery.isError) {
-    const message =
-      productQuery.error instanceof Error
-        ? productQuery.error.message
-        : "Could not load this product.";
     body = (
-      <p className="px-6 py-6 text-sm text-destructive" role="alert">
-        {message}
-      </p>
+      <div className="px-6 py-8 md:px-8">
+        <LoadError
+          message="Could not load this product."
+          onRetry={() => {
+            void productQuery.refetch();
+          }}
+        />
+      </div>
     );
   } else if (categories.isError) {
     body = (
-      <p className="px-6 py-6 text-sm text-destructive" role="alert">
-        Could not load categories.
-      </p>
+      <div className="px-6 py-8 md:px-8">
+        <LoadError
+          message="Could not load categories."
+          onRetry={() => {
+            void categories.refetch();
+          }}
+        />
+      </div>
     );
   } else if ((!isEdit || product !== undefined) && categoriesReady) {
     body = <ProductForm key={product?.id ?? "create"} product={product} onClose={onClose} />;
@@ -301,12 +311,13 @@ export function ProductFormDrawer({
     <div className="fixed inset-0 z-20">
       <div className="absolute inset-0 bg-foreground/40" onClick={onClose} />
       <aside
+        ref={panelRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
         className="absolute inset-y-0 right-0 flex w-full max-w-md flex-col border-l border-border bg-background"
       >
-        <div className="flex items-center justify-between border-b border-border px-6 py-4">
+        <div className="flex items-center justify-between gap-6 border-b border-border px-6 py-5 md:px-8">
           <h2 id={titleId} className="text-3xl">
             {isEdit ? "Edit product" : "New product"}
           </h2>

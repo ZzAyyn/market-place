@@ -8,7 +8,7 @@ type CategoryChipsProps = {
 
 export function CategoryChips({ categories, activeSlug, onSelect }: CategoryChipsProps) {
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="flex flex-wrap gap-3">
       <Chip label="All" active={activeSlug === undefined} onSelect={() => onSelect(undefined)} />
       {categories?.map((category) => (
         <Chip
@@ -30,8 +30,8 @@ function Chip({ label, active, onSelect }: { label: string; active: boolean; onS
       onClick={onSelect}
       className={
         active
-          ? "rounded bg-accent px-3 py-1 text-sm text-accent-foreground"
-          : "rounded border border-border px-3 py-1 text-sm"
+          ? "rounded bg-accent px-4 py-2 text-sm text-accent-foreground"
+          : "rounded border border-border px-4 py-2 text-sm"
       }
     >
       {label}

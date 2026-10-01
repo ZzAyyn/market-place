@@ -10,12 +10,12 @@ export function Pagination({ page, pageCount, onPageChange }: PaginationProps) {
   }
 
   return (
-    <nav aria-label="Pagination" className="mt-8 flex items-center gap-4">
+    <nav aria-label="Pagination" className="mt-12 flex flex-wrap items-center gap-6 md:mt-16">
       <button
         type="button"
         onClick={() => onPageChange(page - 1)}
         disabled={page <= 1}
-        className="rounded border border-border px-3 py-2 text-sm disabled:opacity-40"
+        className="rounded border border-border px-4 py-2 text-sm disabled:opacity-40"
       >
         Previous
       </button>
@@ -26,7 +26,7 @@ export function Pagination({ page, pageCount, onPageChange }: PaginationProps) {
         type="button"
         onClick={() => onPageChange(page + 1)}
         disabled={page >= pageCount}
-        className="rounded border border-border px-3 py-2 text-sm disabled:opacity-40"
+        className="rounded border border-border px-4 py-2 text-sm disabled:opacity-40"
       >
         Next
       </button>

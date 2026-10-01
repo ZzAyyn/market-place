@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useSearchParams } from "react-router";
 import { adminProductPageSize, useDeleteProduct, useProducts, type Product } from "./api/products.ts";
 import { Pagination } from "./components/Pagination.tsx";
+import { LoadError } from "./components/LoadError.tsx";
 import { ProductAdminTable } from "./components/ProductAdminTable.tsx";
 import { ProductDeleteDialog } from "./components/ProductDeleteDialog.tsx";
 import { ProductFormDrawer } from "./components/ProductFormDrawer.tsx";
@@ -56,7 +57,6 @@ export function AdminPage() {
   const list = products.data?.data;
   const total = products.data?.meta.total ?? 0;
   const pageCount = Math.ceil(total / adminProductPageSize);
-  const errorMessage = products.error instanceof Error ? products.error.message : undefined;
 
   let content = (
     <>
@@ -72,9 +72,12 @@ export function AdminPage() {
 
   if (products.isError) {
     content = (
-      <p className="text-destructive" role="alert">
-        {errorMessage ?? "Could not load products."}
-      </p>
+      <LoadError
+        message="Could not load products."
+        onRetry={() => {
+          void products.refetch();
+        }}
+      />
     );
   } else if (!products.isPending && total === 0) {
     content = <p className="text-muted">No products yet.</p>;
@@ -83,20 +86,20 @@ export function AdminPage() {
   return (
     <>
       <header className="sticky top-0 z-10 border-b border-border bg-background">
-        <div className="flex items-center justify-between gap-4 px-6 py-3">
-          <h1 className="text-xl">
+        <div className="flex items-center justify-between gap-6 px-6 py-5 md:px-10 md:py-6 lg:px-16">
+          <h1 className="min-w-0 truncate text-2xl">
             <Link to="/">Marketplace</Link>
           </h1>
           <button
             type="button"
             onClick={() => setEditor({ mode: "create" })}
-            className="rounded bg-accent px-4 py-2 text-sm font-medium text-accent-foreground"
+            className="shrink-0 rounded bg-accent px-5 py-2.5 text-sm font-medium text-accent-foreground"
           >
             New product
           </button>
         </div>
       </header>
-      <main className="px-6 py-8">{content}</main>
+      <main className="px-6 py-12 md:px-10 md:py-16 lg:px-16">{content}</main>
       {editor.mode !== "closed" ? (
         <ProductFormDrawer
           productId={editor.mode === "edit" ? editor.productId : undefined}

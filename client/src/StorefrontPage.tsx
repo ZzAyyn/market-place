@@ -4,6 +4,7 @@ import { useCategories } from "./api/categories.ts";
 import { productPageSize, useProducts, type ProductSort } from "./api/products.ts";
 import { CategoryChips } from "./components/CategoryChips.tsx";
 import { Header } from "./components/Header.tsx";
+import { LoadError } from "./components/LoadError.tsx";
 import { Pagination } from "./components/Pagination.tsx";
 import { ProductGrid } from "./components/ProductGrid.tsx";
 import { SortSelect } from "./components/SortSelect.tsx";
@@ -130,28 +131,38 @@ export function StorefrontPage() {
   const total = products.data?.meta.total ?? 0;
   const isNoMatch = !products.isPending && !products.isError && list?.length === 0 && hasFilter;
   const pageCount = Math.ceil(total / productPageSize);
-  const errorMessage = products.error instanceof Error ? products.error.message : undefined;
 
   return (
     <>
       <Header query={query} onQueryChange={setQuery} />
-      <main className="px-6 py-8">
-        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <CategoryChips
-            categories={categories.data?.data}
-            activeSlug={category}
-            onSelect={selectCategory}
-          />
+      <main className="px-6 py-12 md:px-10 md:py-16 lg:px-16">
+        <div className="mb-12 flex flex-col gap-6 md:mb-16 md:flex-row md:items-center md:justify-between">
+          {categories.isError ? (
+            <LoadError
+              message="Could not load categories."
+              onRetry={() => {
+                void categories.refetch();
+              }}
+            />
+          ) : (
+            <CategoryChips
+              categories={categories.data?.data}
+              activeSlug={category}
+              onSelect={selectCategory}
+            />
+          )}
           <SortSelect sort={sort} onSortChange={selectSort} />
         </div>
         <ProductGrid
           products={list}
           isPending={products.isPending}
           isError={products.isError}
-          errorMessage={errorMessage}
           isNoMatch={isNoMatch}
           noMatchMessage={noMatchMessage(urlQuery, categoryName)}
           onClearFilters={clearFilters}
+          onRetry={() => {
+            void products.refetch();
+          }}
         />
         <Pagination page={page} pageCount={pageCount} onPageChange={selectPage} />
       </main>

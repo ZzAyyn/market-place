@@ -8,10 +8,13 @@ type HeaderProps = {
 export function Header({ query, onQueryChange }: HeaderProps) {
   return (
     <header className="sticky top-0 z-10 border-b border-border bg-background">
-      <div className="flex items-center gap-4 px-6 py-3">
-        <h1 className="shrink-0 text-xl">
+      <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-6 gap-y-4 px-6 py-5 md:grid-cols-[auto_minmax(0,1fr)_auto] md:px-10 md:py-6 lg:px-16">
+        <h1 className="truncate text-2xl">
           <Link to="/">Marketplace</Link>
         </h1>
+        <Link to="/admin" className="text-sm md:col-start-3">
+          Admin
+        </Link>
         <input
           type="search"
           value={query}
@@ -20,11 +23,8 @@ export function Header({ query, onQueryChange }: HeaderProps) {
           }}
           placeholder="Search products"
           aria-label="Search products"
-          className="min-w-0 flex-1 rounded border border-border bg-background px-3 py-2 text-sm"
+          className="col-span-2 min-w-0 rounded border border-border bg-background px-4 py-3 text-sm md:col-span-1 md:col-start-2 md:row-start-1"
         />
-        <Link to="/admin" className="shrink-0 text-sm">
-          Admin
-        </Link>
       </div>
     </header>
   );

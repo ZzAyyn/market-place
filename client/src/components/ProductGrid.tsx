@@ -1,29 +1,31 @@
 import type { Product } from "../api/products.ts";
+import { LoadError } from "./LoadError.tsx";
 import { ProductCard } from "./ProductCard.tsx";
 import { ProductCardSkeleton } from "./ProductCardSkeleton.tsx";
 
 const skeletonCount = 8;
 
-const gridClassName = "grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4";
+const gridClassName =
+  "grid grid-cols-1 gap-y-12 md:grid-cols-2 md:gap-x-10 md:gap-y-14 lg:grid-cols-4 lg:gap-x-12";
 
 type ProductGridProps = {
   products: Product[] | undefined;
   isPending: boolean;
   isError: boolean;
-  errorMessage: string | undefined;
   isNoMatch: boolean;
   noMatchMessage: string;
   onClearFilters: () => void;
+  onRetry: () => void;
 };
 
 export function ProductGrid({
   products,
   isPending,
   isError,
-  errorMessage,
   isNoMatch,
   noMatchMessage,
   onClearFilters,
+  onRetry,
 }: ProductGridProps) {
   if (isPending) {
     return (
@@ -38,11 +40,7 @@ export function ProductGrid({
   }
 
   if (isError) {
-    return (
-      <p className="text-destructive" role="alert">
-        {errorMessage ?? "Could not load products."}
-      </p>
-    );
+    return <LoadError message="Could not load products." onRetry={onRetry} />;
   }
 
   if (isNoMatch) {
@@ -52,7 +50,7 @@ export function ProductGrid({
         <button
           type="button"
           onClick={onClearFilters}
-          className="mt-4 rounded border border-border px-3 py-2 text-sm"
+          className="mt-5 rounded border border-border px-4 py-2 text-sm"
         >
           Clear filters
         </button>

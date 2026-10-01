@@ -40,6 +40,11 @@ body {
   font-family: var(--font-sans);
 }
 
+:focus-visible {
+  outline: 2px solid var(--foreground);
+  outline-offset: 3px;
+}
+
 h1,
 h2,
 h3 {
