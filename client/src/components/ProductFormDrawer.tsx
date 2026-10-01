@@ -2,6 +2,7 @@ import { useEffect, useId, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { useCategories } from "../api/categories.ts";
 import {
   createProduct,
@@ -84,10 +85,13 @@ function ProductForm({
     try {
       await save.mutateAsync(values);
     } catch (error) {
-      setFormMessage(applyServerFieldErrors(error, setError));
+      const message = applyServerFieldErrors(error, setError);
+      setFormMessage(message);
+      toast.error(message ?? "Could not save this product.");
       return;
     }
 
+    toast.success(mode === "create" ? "Product created." : "Product updated.");
     await queryClient.invalidateQueries({ queryKey: ["products"] });
     onClose();
   }

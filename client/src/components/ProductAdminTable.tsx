@@ -25,7 +25,7 @@ function ProductAdminRowSkeleton() {
         <div className="h-5 w-8 animate-pulse rounded bg-subtle" />
       </td>
       <td className={cellClassName}>
-        <div className="h-5 w-6 animate-pulse rounded bg-subtle" />
+        <div className="h-5 w-24 animate-pulse rounded bg-subtle" />
       </td>
     </tr>
   );
@@ -34,9 +34,11 @@ function ProductAdminRowSkeleton() {
 function ProductAdminRow({
   product,
   onEdit,
+  onDelete,
 }: {
   product: Product;
   onEdit: (product: Product) => void;
+  onDelete: (product: Product) => void;
 }) {
   return (
     <tr className="border-b border-border">
@@ -61,9 +63,18 @@ function ProductAdminRow({
       </td>
       <td className={`${cellClassName} text-sm`}>{product.stock}</td>
       <td className={cellClassName}>
-        <button type="button" onClick={() => onEdit(product)} className="text-sm underline">
-          Edit
-        </button>
+        <div className="flex gap-3">
+          <button type="button" onClick={() => onEdit(product)} className="text-sm underline">
+            Edit
+          </button>
+          <button
+            type="button"
+            onClick={() => onDelete(product)}
+            className="text-sm text-destructive underline"
+          >
+            Delete
+          </button>
+        </div>
       </td>
     </tr>
   );
@@ -73,9 +84,15 @@ type ProductAdminTableProps = {
   products: Product[] | undefined;
   isPending: boolean;
   onEdit: (product: Product) => void;
+  onDelete: (product: Product) => void;
 };
 
-export function ProductAdminTable({ products, isPending, onEdit }: ProductAdminTableProps) {
+export function ProductAdminTable({
+  products,
+  isPending,
+  onEdit,
+  onDelete,
+}: ProductAdminTableProps) {
   return (
     <div className="overflow-x-auto">
       <table className="w-full border-collapse text-left">
@@ -108,7 +125,12 @@ export function ProductAdminTable({ products, isPending, onEdit }: ProductAdminT
                 <ProductAdminRowSkeleton key={index} />
               ))
             : products?.map((product) => (
-                <ProductAdminRow key={product.id} product={product} onEdit={onEdit} />
+                <ProductAdminRow
+                  key={product.id}
+                  product={product}
+                  onEdit={onEdit}
+                  onDelete={onDelete}
+                />
               ))}
         </tbody>
       </table>

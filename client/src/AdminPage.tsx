@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Link, useSearchParams } from "react-router";
-import { adminProductPageSize, useProducts, type Product } from "./api/products.ts";
+import { adminProductPageSize, useDeleteProduct, useProducts, type Product } from "./api/products.ts";
 import { Pagination } from "./components/Pagination.tsx";
 import { ProductAdminTable } from "./components/ProductAdminTable.tsx";
+import { ProductDeleteDialog } from "./components/ProductDeleteDialog.tsx";
 import { ProductFormDrawer } from "./components/ProductFormDrawer.tsx";
 
 type ProductEditor = { mode: "closed" } | { mode: "create" } | { mode: "edit"; productId: string };
@@ -18,7 +19,19 @@ function readPage(value: string | null): number {
 export function AdminPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [editor, setEditor] = useState<ProductEditor>({ mode: "closed" });
+  const [productToDelete, setProductToDelete] = useState<Product | null>(null);
+  const removeProduct = useDeleteProduct();
   const page = readPage(searchParams.get("page"));
+
+  function confirmDelete(): void {
+    if (productToDelete === null) {
+      return;
+    }
+
+    const product = productToDelete;
+    setProductToDelete(null);
+    removeProduct.mutate({ id: product.id, name: product.name });
+  }
 
   function selectPage(nextPage: number): void {
     setSearchParams((current) => {
@@ -51,6 +64,7 @@ export function AdminPage() {
         products={list}
         isPending={products.isPending}
         onEdit={(product: Product) => setEditor({ mode: "edit", productId: product.id })}
+        onDelete={setProductToDelete}
       />
       <Pagination page={page} pageCount={pageCount} onPageChange={selectPage} />
     </>
@@ -87,6 +101,13 @@ export function AdminPage() {
         <ProductFormDrawer
           productId={editor.mode === "edit" ? editor.productId : undefined}
           onClose={() => setEditor({ mode: "closed" })}
+        />
+      ) : null}
+      {productToDelete !== null ? (
+        <ProductDeleteDialog
+          productName={productToDelete.name}
+          onCancel={() => setProductToDelete(null)}
+          onConfirm={confirmDelete}
         />
       ) : null}
     </>

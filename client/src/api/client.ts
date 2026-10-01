@@ -76,3 +76,11 @@ export async function apiSend<T>(
 
   return schema.parse(await response.json());
 }
+
+export async function apiDelete(path: string): Promise<void> {
+  const response = await fetch(apiUrl(path), { method: "DELETE" });
+
+  if (!response.ok) {
+    throw await errorFromResponse(response);
+  }
+}

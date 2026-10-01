@@ -1,6 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { z } from "zod";
-import { ApiError, apiGet, apiSend } from "./client.ts";
+import { ApiError, apiDelete, apiGet, apiSend } from "./client.ts";
 
 const productSchema = z.object({
   id: z.string(),
@@ -106,6 +107,74 @@ export function createProduct(body: ProductWriteBody) {
 
 export function updateProduct(id: string, body: ProductWriteBody) {
   return apiSend("PATCH", `/api/products/${encodeURIComponent(id)}`, body, productDetailResponseSchema);
+}
+
+function isProductList(value: unknown): value is ProductList {
+  if (typeof value !== "object" || value === null) {
+    return false;
+  }
+
+  if (!("data" in value) || !("meta" in value) || !Array.isArray(value.data)) {
+    return false;
+  }
+
+  const meta: unknown = value.meta;
+  return typeof meta === "object" && meta !== null && "total" in meta && "page" in meta && "pageSize" in meta;
+}
+
+export function deleteProduct(id: string): Promise<void> {
+  return apiDelete(`/api/products/${encodeURIComponent(id)}`);
+}
+
+export function useDeleteProduct() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id }: { id: string; name: string }) => deleteProduct(id),
+    retry: false,
+    onMutate: async ({ id }) => {
+      await queryClient.cancelQueries({ queryKey: ["products"] });
+      const previous = queryClient.getQueriesData({ queryKey: ["products"] });
+
+      queryClient.setQueriesData({ queryKey: ["products"] }, (current: unknown) => {
+        if (!isProductList(current)) {
+          return current;
+        }
+
+        const data = current.data.filter((product) => product.id !== id);
+        if (data.length === current.data.length) {
+          return current;
+        }
+
+        return {
+          ...current,
+          data,
+          meta: {
+            ...current.meta,
+            total: Math.max(0, current.meta.total - 1),
+          },
+        };
+      });
+
+      return { previous };
+    },
+    onSuccess: (_data, { name }) => {
+      toast.success(`Deleted ${name}.`);
+    },
+    onError: (error, _product, context) => {
+      if (context !== undefined) {
+        for (const [queryKey, data] of context.previous) {
+          queryClient.setQueryData(queryKey, data);
+        }
+      }
+
+      const message = error instanceof Error ? error.message : "Could not delete this product.";
+      toast.error(message);
+    },
+    onSettled: () => {
+      void queryClient.invalidateQueries({ queryKey: ["products"] });
+    },
+  });
 }
 
 export function useProduct(slug: string | undefined) {

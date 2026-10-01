@@ -46,3 +46,20 @@ h3 {
   font-family: var(--font-display);
   font-weight: 500;
 }
+
+[data-sonner-toaster] {
+  font-family: var(--font-sans);
+}
+
+[data-sonner-toaster][data-sonner-theme="light"] {
+  --normal-bg: var(--background);
+  --normal-border: var(--border);
+  --normal-text: var(--foreground);
+  --border-radius: var(--radius);
+  --success-bg: var(--subtle);
+  --success-border: var(--border);
+  --success-text: var(--foreground);
+  --error-bg: var(--destructive-subtle);
+  --error-border: var(--destructive);
+  --error-text: var(--destructive);
+}
