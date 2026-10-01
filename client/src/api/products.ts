@@ -7,6 +7,7 @@ const productSchema = z.object({
   name: z.string(),
   slug: z.string(),
   priceCents: z.number().int(),
+  stock: z.number().int(),
   imageUrl: z.string().nullable(),
   category: z.object({
     id: z.string(),
@@ -26,7 +27,6 @@ const productListSchema = z.object({
 
 const productDetailSchema = productSchema.extend({
   description: z.string(),
-  stock: z.number().int(),
 });
 
 const productDetailResponseSchema = z.object({
@@ -41,12 +41,14 @@ export const productSorts = ["newest", "price_asc", "price_desc"] as const;
 export type ProductSort = (typeof productSorts)[number];
 
 export const productPageSize = 8;
+export const adminProductPageSize = 20;
 
 export type ProductListParams = {
   q: string;
   category: string | undefined;
   sort: ProductSort;
   page: number;
+  pageSize?: number;
 };
 
 export function useProducts(params: ProductListParams) {
@@ -55,7 +57,7 @@ export function useProducts(params: ProductListParams) {
     category: params.category,
     sort: params.sort,
     page: params.page,
-    pageSize: productPageSize,
+    pageSize: params.pageSize ?? productPageSize,
   };
 
   return useQuery({
