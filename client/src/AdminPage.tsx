@@ -1,7 +1,11 @@
+import { useState } from "react";
 import { Link, useSearchParams } from "react-router";
-import { adminProductPageSize, useProducts } from "./api/products.ts";
+import { adminProductPageSize, useProducts, type Product } from "./api/products.ts";
 import { Pagination } from "./components/Pagination.tsx";
 import { ProductAdminTable } from "./components/ProductAdminTable.tsx";
+import { ProductFormDrawer } from "./components/ProductFormDrawer.tsx";
+
+type ProductEditor = { mode: "closed" } | { mode: "create" } | { mode: "edit"; productId: string };
 
 function readPage(value: string | null): number {
   const page = Number(value);
@@ -13,6 +17,7 @@ function readPage(value: string | null): number {
 
 export function AdminPage() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [editor, setEditor] = useState<ProductEditor>({ mode: "closed" });
   const page = readPage(searchParams.get("page"));
 
   function selectPage(nextPage: number): void {
@@ -42,7 +47,11 @@ export function AdminPage() {
 
   let content = (
     <>
-      <ProductAdminTable products={list} isPending={products.isPending} />
+      <ProductAdminTable
+        products={list}
+        isPending={products.isPending}
+        onEdit={(product: Product) => setEditor({ mode: "edit", productId: product.id })}
+      />
       <Pagination page={page} pageCount={pageCount} onPageChange={selectPage} />
     </>
   );
@@ -66,6 +75,7 @@ export function AdminPage() {
           </h1>
           <button
             type="button"
+            onClick={() => setEditor({ mode: "create" })}
             className="rounded bg-accent px-4 py-2 text-sm font-medium text-accent-foreground"
           >
             New product
@@ -73,6 +83,12 @@ export function AdminPage() {
         </div>
       </header>
       <main className="px-6 py-8">{content}</main>
+      {editor.mode !== "closed" ? (
+        <ProductFormDrawer
+          productId={editor.mode === "edit" ? editor.productId : undefined}
+          onClose={() => setEditor({ mode: "closed" })}
+        />
+      ) : null}
     </>
   );
 }

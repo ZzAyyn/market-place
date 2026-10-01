@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { z } from "zod";
-import { ApiError, apiGet } from "./client.ts";
+import { ApiError, apiGet, apiSend } from "./client.ts";
 
 const productSchema = z.object({
   id: z.string(),
@@ -36,6 +36,15 @@ const productDetailResponseSchema = z.object({
 export type Product = z.infer<typeof productSchema>;
 export type ProductDetail = z.infer<typeof productDetailSchema>;
 export type ProductList = z.infer<typeof productListSchema>;
+
+export type ProductWriteBody = {
+  name: string;
+  description: string;
+  priceCents: number;
+  stock: number;
+  categoryId: string;
+  imageUrl?: string | null;
+};
 
 export const productSorts = ["newest", "price_asc", "price_desc"] as const;
 export type ProductSort = (typeof productSorts)[number];
@@ -76,6 +85,27 @@ export function useProducts(params: ProductListParams) {
       return apiGet(`/api/products?${search.toString()}`, productListSchema);
     },
   });
+}
+
+export function useProductById(id: string | undefined) {
+  return useQuery({
+    queryKey: ["products", "id", id],
+    enabled: id !== undefined && id.length > 0,
+    queryFn: () => {
+      if (id === undefined || id.length === 0) {
+        throw new Error("Missing product id");
+      }
+      return apiGet(`/api/products/${encodeURIComponent(id)}`, productDetailResponseSchema);
+    },
+  });
+}
+
+export function createProduct(body: ProductWriteBody) {
+  return apiSend("POST", "/api/products", body, productDetailResponseSchema);
+}
+
+export function updateProduct(id: string, body: ProductWriteBody) {
+  return apiSend("PATCH", `/api/products/${encodeURIComponent(id)}`, body, productDetailResponseSchema);
 }
 
 export function useProduct(slug: string | undefined) {

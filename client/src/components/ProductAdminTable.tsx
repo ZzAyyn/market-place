@@ -31,7 +31,13 @@ function ProductAdminRowSkeleton() {
   );
 }
 
-function ProductAdminRow({ product }: { product: Product }) {
+function ProductAdminRow({
+  product,
+  onEdit,
+}: {
+  product: Product;
+  onEdit: (product: Product) => void;
+}) {
   return (
     <tr className="border-b border-border">
       <td className={cellClassName}>
@@ -54,7 +60,11 @@ function ProductAdminRow({ product }: { product: Product }) {
         {formatPrice(product.priceCents)}
       </td>
       <td className={`${cellClassName} text-sm`}>{product.stock}</td>
-      <td className={`${cellClassName} text-sm text-muted`}>—</td>
+      <td className={cellClassName}>
+        <button type="button" onClick={() => onEdit(product)} className="text-sm underline">
+          Edit
+        </button>
+      </td>
     </tr>
   );
 }
@@ -62,9 +72,10 @@ function ProductAdminRow({ product }: { product: Product }) {
 type ProductAdminTableProps = {
   products: Product[] | undefined;
   isPending: boolean;
+  onEdit: (product: Product) => void;
 };
 
-export function ProductAdminTable({ products, isPending }: ProductAdminTableProps) {
+export function ProductAdminTable({ products, isPending, onEdit }: ProductAdminTableProps) {
   return (
     <div className="overflow-x-auto">
       <table className="w-full border-collapse text-left">
@@ -96,7 +107,9 @@ export function ProductAdminTable({ products, isPending }: ProductAdminTableProp
             ? Array.from({ length: skeletonRowCount }, (_, index) => (
                 <ProductAdminRowSkeleton key={index} />
               ))
-            : products?.map((product) => <ProductAdminRow key={product.id} product={product} />)}
+            : products?.map((product) => (
+                <ProductAdminRow key={product.id} product={product} onEdit={onEdit} />
+              ))}
         </tbody>
       </table>
     </div>
