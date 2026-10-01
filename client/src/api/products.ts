@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { z } from "zod";
-import { apiGet } from "./client.ts";
+import { ApiError, apiGet } from "./client.ts";
 
 const productSchema = z.object({
   id: z.string(),
@@ -24,7 +24,17 @@ const productListSchema = z.object({
   }),
 });
 
+const productDetailSchema = productSchema.extend({
+  description: z.string(),
+  stock: z.number().int(),
+});
+
+const productDetailResponseSchema = z.object({
+  data: productDetailSchema,
+});
+
 export type Product = z.infer<typeof productSchema>;
+export type ProductDetail = z.infer<typeof productDetailSchema>;
 export type ProductList = z.infer<typeof productListSchema>;
 
 export const productSorts = ["newest", "price_asc", "price_desc"] as const;
@@ -62,6 +72,28 @@ export function useProducts(params: ProductListParams) {
       search.set("page", String(query.page));
       search.set("pageSize", String(query.pageSize));
       return apiGet(`/api/products?${search.toString()}`, productListSchema);
+    },
+  });
+}
+
+export function useProduct(slug: string | undefined) {
+  return useQuery({
+    queryKey: ["products", "slug", slug],
+    enabled: slug !== undefined && slug.length > 0,
+    retry: (failureCount, error) => {
+      if (error instanceof ApiError && error.status === 404) {
+        return false;
+      }
+      return failureCount < 3;
+    },
+    queryFn: () => {
+      if (slug === undefined || slug.length === 0) {
+        throw new Error("Missing product slug");
+      }
+      return apiGet(
+        `/api/products/slug/${encodeURIComponent(slug)}`,
+        productDetailResponseSchema,
+      );
     },
   });
 }
