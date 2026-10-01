@@ -5,6 +5,7 @@ import { BrowserRouter } from "react-router";
 import { App } from "./App.tsx";
 import "./index.css";
 
+{/* Query client to build a cache of data for the app */}
 const queryClient = new QueryClient();
 
 const rootElement = document.getElementById("root");
