@@ -2,6 +2,18 @@
 
 A small shop for browsing products, with an admin screen to create, edit, and delete them.
 
+## Light mode
+
+![Shop in light mode](docs/Marketplace%20Light%20Storefront.png)
+
+![Admin in light mode](docs/Marketplace%20Light%20AdminPage.png)
+
+## Dark mode
+
+![Shop in dark mode](docs/Marketplace%20Dark%20Storefront.png)
+
+![Admin in dark mode](docs/Marketplace%20Dark%20AdminPage.png)
+
 ## Quick start
 
 Postgres runs in Docker. The app is two processes: the API in `server`, and the Vite app in `client`.
