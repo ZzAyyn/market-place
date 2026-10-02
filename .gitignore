@@ -18,4 +18,4 @@ Thumbs.db
 npm-debug.log*
 
 # Local rules
-.cursor/rules/working-style.mdc
+.cursor/rules/
