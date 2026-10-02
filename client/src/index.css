@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap");
 @import "tailwindcss";
 
 :root {
@@ -12,9 +12,27 @@
   --destructive: #9c2f2f;
   --destructive-foreground: #fffaf7;
   --destructive-subtle: #f6e4de;
-  --font-display: "Fraunces", ui-serif, serif;
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --header: #241c18;
+  --header-foreground: #f0ebe4;
+  --header-muted: #a39a8f;
+  --font-display: "Poppins", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif;
   --radius: 8px;
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --background: #1a1613;
+  --foreground: #f0ebe4;
+  --subtle: #241f1a;
+  --border: #3a332c;
+  --muted: #a39a8f;
+  --accent: #d96b45;
+  --accent-foreground: #1a1613;
+  --destructive: #e07a6a;
+  --destructive-foreground: #1a1613;
+  --destructive-subtle: #3a211c;
+  color-scheme: dark;
 }
 
 @theme inline {
@@ -28,6 +46,9 @@
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-destructive-subtle: var(--destructive-subtle);
+  --color-header: var(--header);
+  --color-header-foreground: var(--header-foreground);
+  --color-header-muted: var(--header-muted);
   --font-display: var(--font-display);
   --font-sans: var(--font-sans);
   --radius: var(--radius);
@@ -45,6 +66,10 @@ body {
   outline-offset: 3px;
 }
 
+[data-theme="dark"] header :focus-visible {
+  outline-color: var(--header-foreground);
+}
+
 h1,
 h2,
 h3 {
@@ -56,7 +81,8 @@ h3 {
   font-family: var(--font-sans);
 }
 
-[data-sonner-toaster][data-sonner-theme="light"] {
+html [data-sonner-toaster][data-sonner-theme="light"],
+html [data-sonner-toaster][data-sonner-theme="dark"] {
   --normal-bg: var(--background);
   --normal-border: var(--border);
   --normal-text: var(--foreground);

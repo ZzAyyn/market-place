@@ -6,6 +6,8 @@ import { LoadError } from "./components/LoadError.tsx";
 import { ProductAdminTable } from "./components/ProductAdminTable.tsx";
 import { ProductDeleteDialog } from "./components/ProductDeleteDialog.tsx";
 import { ProductFormDrawer } from "./components/ProductFormDrawer.tsx";
+import { ThemeToggle } from "./components/ThemeToggle.tsx";
+import { useTheme } from "./ThemeProvider.tsx";
 
 type ProductEditor = { mode: "closed" } | { mode: "create" } | { mode: "edit"; productId: string };
 
@@ -22,6 +24,8 @@ export function AdminPage() {
   const [editor, setEditor] = useState<ProductEditor>({ mode: "closed" });
   const [productToDelete, setProductToDelete] = useState<Product | null>(null);
   const removeProduct = useDeleteProduct();
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
   const page = readPage(searchParams.get("page"));
 
   function confirmDelete(): void {
@@ -85,18 +89,29 @@ export function AdminPage() {
 
   return (
     <>
-      <header className="sticky top-0 z-10 border-b border-border bg-background">
+      <header
+        className={
+          isDark
+            ? "sticky top-0 z-10 border-b border-header-foreground/20 bg-header text-header-foreground"
+            : "sticky top-0 z-10 border-b border-border bg-background text-foreground"
+        }
+      >
         <div className="flex items-center justify-between gap-6 px-6 py-5 md:px-10 md:py-6 lg:px-16">
           <h1 className="min-w-0 truncate text-2xl">
-            <Link to="/">Marketplace</Link>
+            <Link to="/" className={isDark ? "text-header-foreground" : "text-header"}>
+              Marketplace
+            </Link>
           </h1>
-          <button
-            type="button"
-            onClick={() => setEditor({ mode: "create" })}
-            className="shrink-0 rounded bg-accent px-5 py-2.5 text-sm font-medium text-accent-foreground"
-          >
-            New product
-          </button>
+          <div className="flex shrink-0 items-center gap-4">
+            <ThemeToggle />
+            <button
+              type="button"
+              onClick={() => setEditor({ mode: "create" })}
+              className="rounded bg-accent px-5 py-2.5 text-sm font-medium text-accent-foreground"
+            >
+              New product
+            </button>
+          </div>
         </div>
       </header>
       <main className="px-6 py-12 md:px-10 md:py-16 lg:px-16">{content}</main>

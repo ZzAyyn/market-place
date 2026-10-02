@@ -4,7 +4,10 @@
   "description": "",
   "scripts": {
     "dev": "tsx watch --env-file=.env src/index.ts",
-    "seed": "tsx --env-file=.env src/seed.ts"
+    "seed": "tsx --env-file=.env src/seed.ts",
+    "db:generate": "prisma generate --config prisma7.config.ts",
+    "db:migrate": "prisma migrate dev --config prisma7.config.ts",
+    "db:studio": "prisma studio --config prisma7.config.ts"
   },
   "keywords": [],
   "author": "",

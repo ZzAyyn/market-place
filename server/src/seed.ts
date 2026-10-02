@@ -47,7 +47,7 @@ const products = [
     priceCents: 12900,
     stock: 5,
     imageUrl:
-      "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1600369672770-985fd30004eb?auto=format&fit=crop&w=1200&q=80",
     categoryName: "Textiles",
   },
   {
@@ -57,7 +57,7 @@ const products = [
     priceCents: 5400,
     stock: 14,
     imageUrl:
-      "https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1666013942797-9daa4b8b3b4f?auto=format&fit=crop&w=1200&q=80",
     categoryName: "Kitchen",
   },
   {
@@ -67,7 +67,7 @@ const products = [
     priceCents: 9800,
     stock: 7,
     imageUrl:
-      "https://images.unsplash.com/photo-1585515320310-259814833e62?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1590794056226-79ef3a8147e1?auto=format&fit=crop&w=1200&q=80",
     categoryName: "Kitchen",
   },
   {
@@ -77,7 +77,7 @@ const products = [
     priceCents: 2200,
     stock: 28,
     imageUrl:
-      "https://images.unsplash.com/photo-1600369672770-985fd30004eb?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1588856062859-561c223f0cdd?auto=format&fit=crop&w=1200&q=80",
     categoryName: "Kitchen",
   },
   {
@@ -107,7 +107,7 @@ const products = [
     priceCents: 1850,
     stock: 42,
     imageUrl:
-      "https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1483546363825-7ebf25fb7513?auto=format&fit=crop&w=1200&q=80",
     categoryName: "Stationery",
   },
   {
